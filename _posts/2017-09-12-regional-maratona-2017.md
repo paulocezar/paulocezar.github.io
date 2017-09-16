@@ -74,7 +74,7 @@ $$F(2) = C \times F(1) + D \times F(0)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ F(3)
 
 $$2(A^2 + B) =  C \times 2A + D \times 2\ \ \ \ \ \ \ \ \ \ \ 2(A^3 + AB) = C \times 2(A^2 + B) + D \times 2A$$
 
-Com isso encontramos $C$ e $D$ em função de $A$ e $B$, sendo que $C = 2A$ e $D = B - A^2$. Agora basta utilizar exponenciação de matrizes para calcular o resultado de $F(N)$.
+Com isso encontramos $C$ e $D$ em função de $A$ e $B$, sendo que $C = 2A$ e $D = B - A^2$. Agora basta utilizar exponenciação de matrizes para calcular o resultado de $F(N) = 2AF(N-1) + (B - A^2)F(N-2)$.
 
 
 ## L

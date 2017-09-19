@@ -41,13 +41,47 @@ Podemos então testar cada uma das notas básicas, em ordem, como base para o to
 
 ## F
 
+Basta ordenar as pontuações em order decrescente. Começamos com `resposta = k` e incrementamos enquanto houverem elementos e a pontuação na posição `resposta` for igual a pontuação na posição `resposta - 1`.
+
 ## G
+
+Esse problema pode ser resolvido com programação dinâmica (se não conhece a técnica pode começar por [aqui][dp-1] ou [aqui][dp-2]). Para simplificar podemos   Seja $F(t, d)$ o número de programas com $t$ minutos tais que a dificuldade do último exercício é $d$. O número total de programas que estamos interessados pode ser calculado como:
+
+$$R = \sum_{d=M}^{N}{F(T, d)}$$
+
+Podemos calcular $f(t, d)$ usando a recorrência:
+$$
+f(t, d) =
+\begin{cases}
+1,  & \text{se $t = 1$,} \\
+f(t-1, d+1),  & \text{se $d = M$,} \\
+f(t-1, d-1),  & \text{se $d = N$,} \\
+f(t-1, d-1) + f(t-1, d+1) , & \text{caso contrário.}  \\
+\end{cases}
+$$
+
+Um detalhe é que para calcular $F(t, \dots)$ só precisamos dos valores de $F(t-1, \dots)$ então podemos usar uma matriz com apenas duas linhas. Além disso também é possível considerar as dificuldades como $[1, N-M+1]$ no lugar de $[M, N]$.
 
 ## H
 
+Podemos construir um grafo direcionado onde cada vértice representa um ponto. Nesse grafo existe uma aresta ligando um vértice $u$ a um vértice $v$ se o ponto representado por $v$ está dentro do triangulo definido pelas âncoras ($A$ e $B$) e pelo ponto representado por $u$. É fácil perceber que nesse grafo não haverão ciclos, logo o problema se reduz a encontrar o [maior caminho em um DAG][longest-dag].
+
+Uma abordagem parecida mas que dispensa a conexão com o problema do maior caminho em um DAG é ordenar os pontos de acordo com o valor da coordenada $y$ e usar programação dinâmica. Um ponto cujo valor de $y$ é maior ou igual ao valor de $y$ de um ponto $i$ não pode estar dentro to triangulo definido pelas âncoras e o ponto $i$. Definimos $dp[i]$ como a maior quantidade de pontos ligados as ancoras tal que o ponto com a maior coordenada $y$ é $i$. Para calcular $dp[i]$ basta olhar os pontos $j < i$.
+
 ## I
 
+O grafo descrito no problema se trata de uma árvore enraizada no vértice $1$. Assim, todo o ouro coletado nos vértices da subárvore enraizada em um vértice $v$, deve passar pela cidade $v$ antes de chegar a capital. Com isso, o fato dos cofres em cada cidade terem capacidade de armazenar todo o ouro viabiliza uma abordagem gulosa. Começando pelas folhas da árvore transferimos todo o ouro para o vértice pai, sempre levando o máximo que a carruagem suporta em uma viagem. Não é possível transferir o ouro percorrendo uma distância menor já que a única forma de levar o ouro da folha $f$ para a raíz passar pelo pai de $f$. Levar o ouro direto para a raiz ou sem avaliar as outras folhas primeiro é inútil pois a diferença caso façamos isso está apenas no fato de que dessa forma não fazemos o melhor uso da capacidade da carroça, deixando de levar mais ouro em uma única viagem (e potencialmente aumentando o número de viagens necessárias). Assim, é possível calcular a resposta com uma simples [busca em profundidade][dfs].
+
 ## J
+
+Podemos olhar para o jogo de uma forma diferente, ao invés de adicionar 1 ou 2 até alcançar $N$, podemos começar com $N$ e ir subtraindo $1$ ou $2$. Assim temos um jogo de subtração para o qual podemos classificar as posições em vencedoras ($V$) e perdedoras ($P$) como descrito [aqui][game-theory].
+
+$N$ | 1 | 2 | 3 | 4 | 5 | 6 | $\dots$
+-- | -- | -- | -- | -- | -- | -- | --
+posição | $\bbox[#6f6,border:.5px black,10px]{V}$ | $\bbox[#6f6,border:.5px black,10px]{V}$ | $\bbox[#f66,border:.5px black,10px]{P}$ | $\bbox[#6f6,border:.5px black,10px]{V}$ | $\bbox[#6f6,border:.5px black,10px]{V}$ | $\bbox[#f66,border:.5px black,10px]{P}$ | $\dots$
+
+Analisando as primeiras posições é possível perceber que a classificação tem um padrão cíclico. Além disso, cada posição vencendora alcança um única posição perdedora. Com essas duas observações é possível perceber que o problema se resume a calcular o resto da divisão de $N$ por 3. Um detalhe é que o valor de $N$ pode ser até $10^{100}$ logo não podemos usar tipos de dados inteiros em C++ ou Java. Uma alternativa é representar o número como string e calcular o resto da divisão na mão. Outra alternativa, talvez um pouco melhor, era aproveitar o fato de que Python agora faz parte das linguagens disponíveis e resolver o problema em uma única linha de código: `print(int(input())%3)`.
+
 
 ## K
 
@@ -79,10 +113,18 @@ Com isso encontramos $C$ e $D$ em função de $A$ e $B$, sendo que $C = 2A$ e $D
 
 ## L
 
+A solução para esse problema é descrita detalhadamente no artigo [Finding submasses in weighted strings with Fast Fourier Transform][submasses].
+
+Resumidamente, definimos $p_i$ como a submassa da subcadeia formada por $s_1 s_2 \dots s_i$. Com isso criamos dois polinômios $P$ e $Q$. O polinômio $P$ é definido por $\sum_{i=1}^n{x^{p_i}}$ enquanto o polinômio $Q$ é definido por $\sum_{i=1}^{n-1}{x^{p_n-p_i}}$. Como a submassa de uma subcadeia $[i, j]$ pode ser calculada pela subtração das submassas dos prefixos $(p_j - p_{i-1})$, ao calcular o polinômio $C = P \times Q$, podemos identificar quais submassas aparecem olhando para os coeficientes de $C$, já que eles são gerados a partir de todas as combinações dos coeficientes de $P$ e $Q$.
+
+Para calcular a multiplicação entre $P$ e $Q$ de forma eficiente usamos [FFT][fft-codeforces].
+
 ## M
 
+Basta fixar cada andar como o andar onde a máquina de café sera instalada. 
 
-E alguns exemplos de implementação:
+
+# Exemplos de implementação
 
 {% gist paulocezar/8d317179d662fbb9407bd84ef8285520 %}
 
@@ -93,3 +135,10 @@ E alguns exemplos de implementação:
 [casa-pombos]: https://pt.wikipedia.org/wiki/Princ%C3%ADpio_da_casa_dos_pombos
 [binomio-newton]: https://pt.wikipedia.org/wiki/Bin%C3%B3mio_de_Newton
 [matrix-expo]: http://fusharblog.com/solving-linear-recurrence-for-programming-contest/
+[dp-1]: https://www.ime.usp.br/~maratona/aulas/programacao-dinamica
+[dp-2]: http://wiki.icmc.usp.br/images/1/1a/PD1.pdf
+[longest-dag]: http://www.geeksforgeeks.org/find-longest-path-directed-acyclic-graph/
+[dfs]: http://maratonapuc.wikidot.com/apostilas:grafos#toc4
+[game-theory]: https://www.topcoder.com/community/data-science/data-science-tutorials/algorithm-games/
+[submasses]: http://dreamboxx.com/mark/data/dam07.pdf
+[fft-codeforces]: http://codeforces.com/blog/entry/43499
